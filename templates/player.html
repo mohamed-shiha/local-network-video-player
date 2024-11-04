@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Player</title>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <style>
+        .video-container {
+            max-width: 1000px;
+            margin: 20px auto;
+        }
+        .back-button {
+            margin: 20px;
+        }
+        .back-button a {
+            text-decoration: none;
+            color: #333;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+        }
+        .video-info {
+            margin: 20px;
+            padding: 15px;
+            background: #f8f8f8;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+        .path-info {
+            color: #666;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="back-button">
+        <a href="{{ url_for('index') }}">← Back to Video List</a>
+    </div>
+    
+    <div class="video-container">
+        <video id="player" playsinline controls crossorigin>
+            <source src="{{ url_for('serve_video', source=source, filepath=os.path.join(rel_path, video)) }}" type="video/mp4" />
+            
+            {% for subtitle in subtitles %}
+            <track 
+                kind="subtitles" 
+                label="{{ subtitle.label }}" 
+                srclang="{{ subtitle.srclang }}" 
+                src="{{ url_for('serve_subtitle', filename=subtitle.file) }}"
+                {% if loop.first %}default{% endif %}
+            >
+            {% endfor %}
+        </video>
+    </div>
+
+    <div class="video-info">
+        <div class="path-info">
+            <strong>Location:</strong> {{ source }}/{{ rel_path if rel_path else 'Root' }}/{{ video }}
+        </div>
+        {% if subtitles %}
+        <div>
+            <strong>Subtitles:</strong>
+            <ul>
+                {% for subtitle in subtitles %}
+                <li>{{ subtitle.label }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const player = new Plyr('#player', {
+                controls: [
+                    'play-large',
+                    'restart',
+                    'rewind',
+                    'play',
+                    'fast-forward',
+                    'progress',
+                    'current-time',
+                    'duration',
+                    'mute',
+                    'volume',
+                    'captions',
+                    'settings',
+                    'pip',
+                    'airplay',
+                    'fullscreen'
+                ],
+                settings: ['captions', 'quality', 'speed'],
+                speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] },
+                keyboard: { focused: true, global: true },
+                captions: { active: true, language: 'auto', update: true }
+            });
+        });
+    </script>
+</body>
+</html> 

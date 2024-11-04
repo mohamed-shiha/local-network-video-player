@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+
+# Video files
+static/content/*
+!static/content/.gitkeep
+static/subtitles/*
+!static/subtitles/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+
+# System
+.DS_Store
+Thumbs.db
